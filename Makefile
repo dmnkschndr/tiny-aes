@@ -5,7 +5,7 @@ CC           = gcc
 LD           = gcc
 AR           = ar
 ARFLAGS      = rcs
-CFLAGS       = -Wall -Os -c
+CFLAGS       = -Wall -Os -c -g
 LDFLAGS      = -Wall -Os -Wl,-Map,test.map
 ifdef AES192
 CFLAGS += -DAES192=1
@@ -22,7 +22,7 @@ INCLUDE_PATH = /usr/lib/avr/include
 # splint static check
 SPLINT       = splint test.c aes.c -I$(INCLUDE_PATH) +charindex -unrecog
 
-default: test.elf
+default: test.elf aes.so
 
 .SILENT:
 .PHONY:  lint clean
@@ -46,6 +46,9 @@ test.elf : aes.o test.o
 aes.a : aes.o
 	echo [AR] $@
 	$(AR) $(ARFLAGS) $@ $^
+
+aes.so : aes.o
+	$(CC) -Wall -Os -g -shared -o libaes.so aes.o
 
 lib : aes.a
 
